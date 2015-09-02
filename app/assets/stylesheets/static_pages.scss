@@ -5,3 +5,17 @@ h1, h2 {
 	
 	text-align:center
 }
+.container-fluid {
+	
+	background-color:black; top:0; position:fixed; width:100%; color: white !important; text-transform:uppercase; letter-spacing:0.2em; font-weight:100; font-size:1.2em; 
+
+}
+
+.navbar-collapse a:hover{
+	
+	transition:1.0s; color: white !important;
+}
+.navbar-brand{
+	
+	color:white !important; font-family:georgia
+}
