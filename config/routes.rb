@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :posts
   resources :products
+  resources :orders, only: [:index, :show, :create, :new]
   get 'static_pages/blog'
 
   get 'static_pages/fighters'
