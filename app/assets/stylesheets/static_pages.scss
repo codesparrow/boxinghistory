@@ -7,15 +7,30 @@ h1, h2 {
 }
 .container-fluid {
 	
-	background-color:black; top:0; position:fixed; width:100%; color: white !important; text-transform:uppercase; letter-spacing:0.2em; font-weight:100; font-size:1.2em; 
+	background-color:black; top:0; left:0; position:fixed; width:100%; color: #bda956; text-transform:uppercase; letter-spacing:0.2em; font-weight:100; font-size:1.2em; 
 
 }
 
 .navbar-collapse a:hover{
 	
-	transition:1.0s; color: white !important;
+	transition:1.0s; color: #bda956 !important;
 }
 .navbar-brand{
 	
 	color:white !important; font-family:georgia
+}
+
+.search  {
+	
+ font-size:12px; float:right; 
+}
+
+.text{
+	
+	color: black; display:inline
+}
+
+.jumbotron {
+	
+	background-color:white;
 }
