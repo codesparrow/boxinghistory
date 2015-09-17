@@ -4,6 +4,7 @@ class StaticPagesController < ApplicationController
   def fight_schedule
   end
   def landing_page
+    @posts = Post.limit(3)
   end
   def contact
   end
