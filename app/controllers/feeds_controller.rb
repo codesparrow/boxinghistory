@@ -21,6 +21,17 @@ class FeedsController < ApplicationController
   def edit
   end
 
+  #GET /feeds/1/retrieve
+  def retrieve
+    body, ok = SuperfeedrEngine::Engine.retrieve(@feed)
+    if !ok
+      redirect_to @feed, notice: body
+    else
+      @feed.notified JSON.parse(body)
+      redirect_to @feed, notice: "Retrieved and saved entries"
+    end
+  end
+
   # POST /feeds
   # POST /feeds.json
   def create
@@ -28,11 +39,17 @@ class FeedsController < ApplicationController
 
     respond_to do |format|
       if @feed.save
-        format.html { redirect_to @feed, notice: 'Feed was successfully created.' }
-        format.json { render :show, status: :created, location: @feed }
+        body, ok = SuperfeedrEngine::Engine.subscribe(@feed, {:retrieve => true})
+        if !ok
+          redirect_to @feed, notice: "Feed was succesfully created but we could not subscribe: #{body}"
+        else
+          if body
+            @feed.notified JSON.parse(body)
+          end
+          redirect_to @feed, notice: "Feed was successfully created and subscribed"
+        end
       else
-        format.html { render :new }
-        format.json { render json: @feed.errors, status: :unprocessable_entity }
+        render :new
       end
     end
   end
@@ -42,22 +59,34 @@ class FeedsController < ApplicationController
   def update
     respond_to do |format|
       if @feed.update(feed_params)
-        format.html { redirect_to @feed, notice: 'Feed was successfully updated.' }
-        format.json { render :show, status: :ok, location: @feed }
+        body, ok = SuperfeedrEngine::Engine.unsubscribe(@feed)
+        if !ok
+          render :edit, notice: "Feed was succesfully updated, but we could not unsubscribe and resubscribe it. #{body}"
       else
-        format.html { render :edit }
-        format.json { render json: @feed.errors, status: :unprocessable_entity }
+        body, ok = SuperfeedrEngine::Engine.subscribe(@feed)
+        if !ok
+          render :edit, notice: "Feed was successfully updated, but we could not unsubscribe and resubscribe it #{body}"
+        else
+          redirect_to @feed, notice: 'Feed was successfully updated.'
+        end
       end
+    else
+      render :edit
     end
+   end
   end
 
   # DELETE /feeds/1
   # DELETE /feeds/1.json
   def destroy
-    @feed.destroy
     respond_to do |format|
-      format.html { redirect_to feeds_url, notice: 'Feed was successfully destroyed.' }
-      format.json { head :no_content }
+      body, ok = SuperfeedrEngine::Engine.unsubscribe(@feed)
+      if !ok
+        redirect_to @feed, notice: body
+      else
+        @feed.destroy
+        redirect_to feeds_url, notice: "Feed was succesfully destroyed"
+      end
     end
   end
 
